@@ -23,7 +23,7 @@ pub async fn mw_require_auth(ctx: Result<Ctx>, req: Request, next: Next) -> Resu
 }
 
 pub async fn mw_ctx_resolver(
-    _mc: State<ModelController>,
+    _mc: State<ModelController>, // database connection
     cookies: Cookies,
     mut req: Request,
     next: Next,
@@ -44,7 +44,7 @@ pub async fn mw_ctx_resolver(
         Err(e) => Err(e),
     };
 
-    // Remove the cookie is something went wrong other than NoAuthCookie
+    // Remove the cookie if something went wrong other than NoAuthCookie
     if result_ctx.is_err() && !matches!(result_ctx, Err(Error::AuthFailNoAuthTokenCookie)) {
         cookies.remove(Cookie::from(AUTH_TOKEN))
     }
